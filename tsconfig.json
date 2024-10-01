@@ -21,6 +21,17 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/api/route.js",
+    "src/lib/mongodb.js",
+    "src/app/models/User.js",
+    "src/app/page.jsx",
+    "src/app/layout.jsx",
+    "src/app/api/users/route.js"
+  ],
   "exclude": ["node_modules"]
 }
