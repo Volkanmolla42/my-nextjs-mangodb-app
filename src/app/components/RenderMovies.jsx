@@ -9,6 +9,8 @@ const RenderMovies = () => {
 
   // Veritabanından filmleri çeken fonksiyon
   const fetchMovies = async () => {
+    console.log(socket);
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${apiUrl}/api/movies`, {
