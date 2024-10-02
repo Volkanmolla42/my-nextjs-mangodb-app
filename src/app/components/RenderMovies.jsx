@@ -8,7 +8,9 @@ const fetchMovies = async () => {
 
   console.log("API URL:", apiUrl); // Log the API URL
 
-  const response = await fetch(`${apiUrl}/api/movies`, { cache: "no-store" });
+  const response = await fetch(`${apiUrl}api/movies`, {
+    cache: "force-cache",
+  });
 
   // If the response is not ok, get the error message
   if (!response.ok) {
