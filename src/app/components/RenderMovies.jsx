@@ -1,6 +1,42 @@
+"use client"; // Bu satırı ekle
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-const RenderMovies = ({ movies, error }) => {
+const RenderMovies = () => {
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
+
+  // Veritabanından filmleri çeken fonksiyon
+  const fetchMovies = async () => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}/api/movies`, {
+        cache: "force-cache",
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+
+      const data = await response.json();
+      setMovies(data);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    // Sayfa ilk açıldığında filmleri getir
+    fetchMovies();
+
+    // Her 5 saniyede bir verileri güncelle
+    const interval = setInterval(fetchMovies, 5000);
+
+    // Bileşen unmount olduğunda interval'i temizle
+    return () => clearInterval(interval);
+  }, []);
+
   // Eğer hata varsa hata mesajını göster
   if (error) {
     return <div>Error: {error}</div>;
@@ -60,23 +96,5 @@ const RenderMovies = ({ movies, error }) => {
     </div>
   );
 };
-
-// Server-side verileri almak için getServerSideProps
-export async function getServerSideProps() {
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const response = await fetch(`${apiUrl}/api/movies`);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText);
-    }
-
-    const movies = await response.json();
-    return { props: { movies } };
-  } catch (error) {
-    return { props: { movies: [], error: error.message } };
-  }
-}
 
 export default RenderMovies;
