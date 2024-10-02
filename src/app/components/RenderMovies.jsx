@@ -1,42 +1,14 @@
-// app/components/RenderMovies.jsx
-import React from "react";
 import Image from "next/image";
 
-// Asynchronous function to fetch movies from the API
-const fetchMovies = async () => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL; // Sadece URL
-
-  console.log("API URL:", apiUrl); // Log the API URL
-
-  const response = await fetch(`${apiUrl}/api/movies`, {
-    cache: "force-cache",
-  });
-
-  // If the response is not ok, get the error message
-  if (!response.ok) {
-    const errorText = await response.text(); // Get error message
-    console.error("Error:", errorText);
-    throw new Error("An error occurred while fetching movies.");
+const RenderMovies = ({ movies, error }) => {
+  // Eğer hata varsa hata mesajını göster
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
-  const data = await response.json();
-  console.log("API Response:", data); // Log the response
-  return data;
-};
-
-// RenderMovies component
-const RenderMovies = async () => {
-  let movies;
-  try {
-    movies = await fetchMovies(); // Fetch movies
-  } catch (error) {
-    console.error("Error:", error);
-    return <div>An error occurred while fetching movies: {error.message}</div>; // Show error message
-  }
-
-  // If there are no movies, show a message
+  // Eğer film yoksa kullanıcıya bildirim göster
   if (!movies || movies.length === 0) {
-    return <div>No movies found.</div>; // If no movies, show message
+    return <div>No movies found.</div>;
   }
 
   return (
@@ -88,5 +60,23 @@ const RenderMovies = async () => {
     </div>
   );
 };
+
+// Server-side verileri almak için getServerSideProps
+export async function getServerSideProps() {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const response = await fetch(`${apiUrl}/api/movies`);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
+    }
+
+    const movies = await response.json();
+    return { props: { movies } };
+  } catch (error) {
+    return { props: { movies: [], error: error.message } };
+  }
+}
 
 export default RenderMovies;
