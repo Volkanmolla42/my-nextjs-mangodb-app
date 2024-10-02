@@ -8,7 +8,7 @@ const fetchMovies = async () => {
 
   console.log("API URL:", apiUrl); // Log the API URL
 
-  const response = await fetch(`${apiUrl}api/movies`, {
+  const response = await fetch(`${apiUrl}/api/movies`, {
     cache: "force-cache",
   });
 
