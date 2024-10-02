@@ -5,13 +5,14 @@ import Image from "next/image";
 const RenderMovies = () => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
+  const [socket, setSocket] = useState(null); // WebSocket durumu
 
   // Veritabanından filmleri çeken fonksiyon
   const fetchMovies = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${apiUrl}/api/movies`, {
-        cache: "force-cache",
+        cache: "no-store",
       });
 
       if (!response.ok) {
@@ -27,14 +28,34 @@ const RenderMovies = () => {
   };
 
   useEffect(() => {
+    // WebSocket bağlantısını oluştur
+    const newSocket = new WebSocket("ws://localhost:8080"); // Sunucu adresi
+    setSocket(newSocket); // Socket'i state'e kaydet
+
+    newSocket.onopen = () => {
+      console.log("WebSocket bağlantısı açıldı.");
+    };
+
+    newSocket.onmessage = (event) => {
+      console.log("Sunucudan gelen mesaj:", event.data);
+      fetchMovies(); // Yeni veriler geldiğinde filmi tekrar çek
+    };
+
+    newSocket.onclose = () => {
+      console.log("WebSocket bağlantısı kapatıldı.");
+    };
+
     // Sayfa ilk açıldığında filmleri getir
     fetchMovies();
 
     // Her 5 saniyede bir verileri güncelle
     const interval = setInterval(fetchMovies, 5000);
 
-    // Bileşen unmount olduğunda interval'i temizle
-    return () => clearInterval(interval);
+    // Bileşen unmount olduğunda bağlantıyı kapat ve interval'i temizle
+    return () => {
+      newSocket.close(); // WebSocket bağlantısını kapat
+      clearInterval(interval);
+    };
   }, []);
 
   // Eğer hata varsa hata mesajını göster
