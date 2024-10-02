@@ -4,12 +4,11 @@ import Image from "next/image";
 
 // Asynchronous function to fetch movies from the API
 const fetchMovies = async () => {
-  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/movies`;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL; // Sadece URL
+
   console.log("API URL:", apiUrl); // Log the API URL
 
-  const response = await fetch(apiUrl, {
-    cache: "no-store",
-  });
+  const response = await fetch(`${apiUrl}/api/movies`, { cache: "no-store" });
 
   // If the response is not ok, get the error message
   if (!response.ok) {
