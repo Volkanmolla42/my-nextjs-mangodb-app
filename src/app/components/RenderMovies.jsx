@@ -58,6 +58,7 @@ const RenderMovies = () => {
       newSocket.close(); // WebSocket bağlantısını kapat
       clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Eğer hata varsa hata mesajını göster
