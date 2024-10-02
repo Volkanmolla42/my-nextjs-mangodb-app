@@ -1,14 +1,17 @@
 import mongoose from "mongoose";
+
+// Define the User schema
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: true, // Name is required
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
+    required: true, // Email is required
+    unique: true, // Ensure email is unique
   },
 });
 
-export default mongoose.models.User || mongoose.model("Users", UserSchema);
+// If the model is already defined, don't redefine it
+export default mongoose.models.User || mongoose.model("User", UserSchema);

@@ -31,7 +31,7 @@
     "src/app/models/User.js",
     "src/app/page.jsx",
     "src/app/layout.jsx",
-    "src/app/api/users/route.js"
+    "src/app/api/movies/route.js"
   ],
   "exclude": ["node_modules"]
 }
